@@ -43,11 +43,11 @@ def lambda_handler(event, context):
         logger.debug(record['eventID'] + " " + record['eventName'])
         # print("DynamoDB Record: " + json.dumps(ddb_record, indent=2))
         key = str(ddb_record['Keys'][key_name]['S'])
-        image = ddb_record['NewImage']
         if record['eventName'] == 'REMOVE':
             logger.debug("Deleting record: " + key)
             res = es.delete(index=es_index, doc_type='event', id=key)
         else:
+            image = ddb_record['NewImage']
             res = es.index(index=es_index, doc_type='event',
                            id=key, body=image)
 
