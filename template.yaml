@@ -1,4 +1,16 @@
 Transform: 'AWS::Serverless-2016-10-31'
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: dynamodb-elasticsearch
+    Description: An example AWS Lambda function to index records from DynamoDB to ElasticSearch.
+    Author: Kwun-Hok Chan
+    SpdxLicenseId: Apache-2.0
+    LicenseUrl: LICENSE
+    ReadmeUrl: README.md
+    Labels: ['AWS', 'sample', 'dynamodb', 'elasticsearch']
+    HomePageUrl: https://github.com/chankh/ddb-elasticsearch
+    SemanticVersion: 1.0.1
+    SourceCodeUrl: https://github.com/chankh/ddb-elasticsearch
 Parameters:
     DynamoDBKey:
         Description: "The name of primary key for DynamoDB table."
@@ -14,8 +26,8 @@ Resources:
         Type: AWS::Serverless::Function
         Properties:
             Handler: lambda_function.lambda_handler
-            Runtime: python3.6
-            CodeUri: ./
+            Runtime: python3.8
+            CodeUri: src/
             Environment:
                 Variables:
                     ELASTICSEARCH_URL: !Ref ElasticSearchUrl

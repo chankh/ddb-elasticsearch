@@ -3,7 +3,6 @@ import logging
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 
-logger = logging.Logger
 es_host = os.getenv('ELASTICSEARCH_URL')
 es_index = os.getenv('ELASTICSEARCH_INDEX')
 key_name = os.getenv('KEY_NAME')
@@ -26,7 +25,7 @@ es = Elasticsearch(host=es_host,
                    connection_class=RequestsHttpConnection,
                    http_auth=auth)
 
-logger.info(es.info())
+print(es.info())
 
 
 def lambda_handler(event, context):
@@ -40,19 +39,17 @@ def lambda_handler(event, context):
     processed = 0
     for record in event['Records']:
         ddb_record = record['dynamodb']
-        logger.debug(record['eventID'] + " " + record['eventName'])
-        # print("DynamoDB Record: " + json.dumps(ddb_record, indent=2))
         key = str(ddb_record['Keys'][key_name]['S'])
         if record['eventName'] == 'REMOVE':
-            logger.debug("Deleting record: " + key)
+            print("Deleting record: " + key)
             res = es.delete(index=es_index, doc_type='event', id=key)
         else:
             image = ddb_record['NewImage']
             res = es.index(index=es_index, doc_type='event',
                            id=key, body=image)
 
-            logger.debug(res)
+            print(res)
         processed = processed + 1
 
-    logger.info('Successfully processed {} records'.format(processed))
+    print('Successfully processed {} records'.format(processed))
     return processed
